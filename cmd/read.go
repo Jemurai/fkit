@@ -40,14 +40,16 @@ var readCmd = &cobra.Command{
 		start := time.Now()
 		log.Debug("Read finding command")
 		file := viper.GetString("file")
-		f := buildFindingsFromFile(file, cmd)
+		f := BuildFindingsFromFile(file)
 		fjson, _ := json.MarshalIndent(f, "", " ")
 		log.Debugf("Finding %s", fjson)
 		utils.Timing(start, "Elasped time: %f")
 	},
 }
 
-func buildFindingsFromFile(file string, cmd *cobra.Command) []finding.Finding {
+// BuildFindingsFromFile read a json file of Findings and build an array
+// of findings that can be used for further processing.
+func BuildFindingsFromFile(file string) []finding.Finding {
 	var findings []finding.Finding
 	rfile, err := os.Open(file)
 	if err != nil {

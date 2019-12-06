@@ -24,3 +24,13 @@ Reading a file with an array of findings:
 ```sh
 go run main.go --debug --file demofinding.json read
 ```
+
+## Pushing Issues To GitHub
+
+We can push issues to GitHub by supplying the file of findings, a repo, an owner and a valid personal access token:
+
+```sh
+go run main.go report --debug --file ../crush/newfindings.json --github-repo fkit --github-token <token> --github-owner jemurai
+```
+
+This is useful in conjunction with other tools that produce findings.

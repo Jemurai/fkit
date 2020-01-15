@@ -1,7 +1,7 @@
 # Findings Toolkit
 
 A simple tool to make it easier to interact with a standard
-finding format.
+finding format [Open Finding Format](https://github.com/owasp/off).
 
 ## Usage
 

@@ -1,4 +1,4 @@
-// Copyright © 2019 Matt Konda <mkonda@jemurai.com>
+// Copyright © 2019-2020 Matt Konda <mkonda@jemurai.com>
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-// newCmd represents the share command
+// readCmd represents the read command
 var readCmd = &cobra.Command{
 	Use:   "read",
 	Short: "Read findings out of a JSON file",
@@ -38,8 +38,8 @@ var readCmd = &cobra.Command{
 
 	Run: func(cmd *cobra.Command, args []string) {
 		start := time.Now()
-		log.Debug("Read finding command")
-		file := viper.GetString("file")
+		file := viper.GetString("infile")
+		log.Debugf("Read finding command on %s", file)
 		f := BuildFindingsFromFile(file)
 		fjson, _ := json.MarshalIndent(f, "", " ")
 		log.Debugf("Finding %s", fjson)
@@ -66,12 +66,10 @@ func BuildFindingsFromFile(file string) []finding.Finding {
 func init() {
 	rootCmd.AddCommand(readCmd)
 
-	readCmd.PersistentFlags().String("file", "", "The file of findings to read.")
-	readCmd.MarkFlagRequired("file")
-
-	viper.BindPFlag("file", readCmd.PersistentFlags().Lookup("file"))
+	readCmd.PersistentFlags().String("infile", "", "The file of findings to read.")
+	readCmd.MarkFlagRequired("infile")
+	viper.BindPFlag("infile", readCmd.PersistentFlags().Lookup("infile"))
 
 	log.SetFormatter(&log.TextFormatter{})
 	log.SetLevel(log.DebugLevel)
-
 }

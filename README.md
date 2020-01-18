@@ -3,26 +3,26 @@
 A simple tool to make it easier to interact with a standard
 finding format [Open Finding Format](https://github.com/owasp/off).
 
-## Usage
-
-`fkit new --directory /your/code/here`
-
 ## Installation
 
 `go get github.com/jemurai/fkit`
 
 ## Working With FKit
 
+### New 
+
 New - this creates a finding and drops it in a json array:
 
 ```sh
-go run main.go --debug --name "Finding Name" --description "Finding Description" --detail "Finding detail" --severity "High" --fingerprint "xyz" --source "File" --location "Line 50" --cvss 9.3 new > demofinding.json
+fkit new --name "Finding Name" --description "Finding Description" --detail "Finding detail" --severity "High" --fingerprint "xyz" --source "File" --location "Line 50" --cvss 9.3 --tag "abc" --tag "def" --cwe https://cwe.mitre.org/data/definitions/134.html --reference https://github.com/owasp/off > demofinding.json
 ```
+
+### Read 
 
 Reading a file with an array of findings:
 
 ```sh
-go run main.go --debug --file demofinding.json read
+fkit read --infile demofindings.json
 ```
 
 ## Pushing Issues To GitHub

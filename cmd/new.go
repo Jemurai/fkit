@@ -1,4 +1,4 @@
-// Copyright © 2019 Matt Konda <mkonda@jemurai.com>
+// Copyright © 2019-2020 Matt Konda <mkonda@jemurai.com>
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-// newCmd represents the share command
+// newCmd represents the new finding command
 var newCmd = &cobra.Command{
 	Use:   "new",
 	Short: "Create a new finding",
@@ -59,9 +59,9 @@ func buildFindingFromOptions(cmd *cobra.Command) finding.Finding {
 		Source:      viper.GetString("source"),
 		Location:    viper.GetString("location"),
 		Cvss:        viper.GetFloat64("cvss"),
-		//		References: []string,
-		//		Cwes: []string,
-		//		Tags: []string,
+		References:  viper.GetStringSlice("reference"),
+		Cwes:        viper.GetStringSlice("cwe"),
+		Tags:        viper.GetStringSlice("tag"),
 	}
 	return finding
 }
@@ -104,6 +104,15 @@ func init() {
 	newCmd.PersistentFlags().String("cvss", "", "The cvss of the finding.")
 	// newCmd.MarkFlagRequired("cvss")
 	viper.BindPFlag("cvss", newCmd.PersistentFlags().Lookup("cvss"))
+
+	newCmd.PersistentFlags().StringArray("reference", nil, "A reference on the finding.")
+	viper.BindPFlag("reference", newCmd.PersistentFlags().Lookup("reference"))
+
+	newCmd.PersistentFlags().StringArray("cwe", nil, "The cwes on the finding.")
+	viper.BindPFlag("cwe", newCmd.PersistentFlags().Lookup("cwe"))
+
+	newCmd.PersistentFlags().StringArray("tag", nil, "The tags on the finding.")
+	viper.BindPFlag("tag", newCmd.PersistentFlags().Lookup("tag"))
 
 	log.SetFormatter(&log.TextFormatter{})
 	log.SetLevel(log.DebugLevel)

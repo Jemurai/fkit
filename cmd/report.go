@@ -46,7 +46,7 @@ var reportCmd = &cobra.Command{
 		repo := viper.GetString("github-repo")
 		owner := viper.GetString("github-owner")
 
-		f := BuildFindingsFromFile(file)
+		f := utils.BuildFindingsFromFile(file)
 
 		if token != "" {
 			client := utils.GetGithubClient(token)

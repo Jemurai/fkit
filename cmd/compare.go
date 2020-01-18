@@ -18,7 +18,6 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/jemurai/fkit/finding"
 	"github.com/jemurai/fkit/utils"
 
 	log "github.com/sirupsen/logrus"
@@ -39,7 +38,7 @@ var compareCmd = &cobra.Command{
 		log.Debug("Compare finding command")
 		fromfile := viper.GetString("fromfile")
 		tofile := viper.GetString("tofile")
-		f := CompareFiles(fromfile, tofile)
+		f := utils.CompareFiles(fromfile, tofile)
 		fjson, _ := json.MarshalIndent(f, "", " ")
 		log.Debugf("Finding %s", fjson)
 		utils.Timing(start, "Elasped time: %f")
@@ -59,55 +58,4 @@ func init() {
 
 	log.SetFormatter(&log.TextFormatter{})
 	log.SetLevel(log.DebugLevel)
-}
-
-// CompareFiles findings in files, wrapping Compare
-func CompareFiles(fromfile string, tofile string) []finding.Finding {
-	log.Debugf("Doing compare with %s and %s findings", fromfile, tofile)
-	oldFindings := BuildFindingsFromFile(fromfile)
-	newFindings := BuildFindingsFromFile(tofile)
-	return Compare(oldFindings, newFindings)
-}
-
-// CompareFileAndArray wraps Compare
-func CompareFileAndArray(fromfile string, newFindings []finding.Finding) []finding.Finding {
-	log.Debugf("Doing compare with %s and %s findings", fromfile,)
-	oldFindings := BuildFindingsFromFile(fromfile)
-	return Compare(oldFindings, newFindings)
-}
-
-// Compare Two Arrays
-func Compare(oldFindings []finding.Finding, findings []finding.Finding) []finding.Finding {
-	log.Debugf("Old findings: count %v  New findings:  %v", len(oldFindings), len(findings))
-	var added []finding.Finding
-	var fixed []finding.Finding
-	found := false
-
-	// Do diff. Start with fixed.
-	for i := 0; i < len(oldFindings); i++ {
-		found = false
-		for j := 0; j < len(findings); j++ {
-			if oldFindings[i].Fingerprint == findings[j].Fingerprint {
-				found = true
-			}
-		}
-		if !found {
-			fixed = append(fixed, oldFindings[i])
-		}
-	}
-
-	// Now look for new
-	for i := 0; i < len(findings); i++ {
-		found = false
-		for j := 0; j < len(oldFindings); j++ {
-			if findings[i].Fingerprint == oldFindings[j].Fingerprint {
-				found = true
-			}
-		}
-		if !found {
-			added = append(added, findings[i])
-		}
-	}
-	log.Debugf("\n\nSummary:\n\tIssues Fixed: %v\n\tNew Issues: %v", len(fixed), len(added))
-	return added
 }

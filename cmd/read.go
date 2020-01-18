@@ -16,11 +16,8 @@ package cmd
 
 import (
 	"encoding/json"
-	"io/ioutil"
-	"os"
 	"time"
 
-	"github.com/jemurai/fkit/finding"
 	"github.com/jemurai/fkit/utils"
 
 	log "github.com/sirupsen/logrus"
@@ -40,27 +37,11 @@ var readCmd = &cobra.Command{
 		start := time.Now()
 		file := viper.GetString("infile")
 		log.Debugf("Read finding command on %s", file)
-		f := BuildFindingsFromFile(file)
+		f := utils.BuildFindingsFromFile(file)
 		fjson, _ := json.MarshalIndent(f, "", " ")
 		log.Debugf("Finding %s", fjson)
 		utils.Timing(start, "Elasped time: %f")
 	},
-}
-
-// BuildFindingsFromFile read a json file of Findings and build an array
-// of findings that can be used for further processing.
-func BuildFindingsFromFile(file string) []finding.Finding {
-	var findings []finding.Finding
-	rfile, err := os.Open(file)
-	if err != nil {
-		log.Error(err)
-	}
-	bytes, err := ioutil.ReadAll(rfile)
-	if err != nil {
-		log.Error(err)
-	}
-	json.Unmarshal(bytes, &findings)
-	return findings
 }
 
 func init() {

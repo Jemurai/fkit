@@ -1,0 +1,21 @@
+[{
+ "name": "Finding Name",
+ "description": "Finding Description",
+ "detail": "Finding detail",
+ "severity": "High",
+ "confidence": "",
+ "fingerprint": "xyz",
+ "timestamp": "2020-01-17T20:30:31.999054-06:00",
+ "source": "File",
+ "location": "Line 50",
+ "cvss": 9.3,
+ "references": [
+  "[]"
+ ],
+ "cwes": [
+  "[]"
+ ],
+ "tags": [
+  "[abc,def]"
+ ]
+}]

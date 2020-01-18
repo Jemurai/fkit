@@ -1,0 +1,31 @@
+[{
+ "name": "Finding Name",
+ "description": "Finding Description",
+ "detail": "Finding detail",
+ "severity": "High",
+ "confidence": "",
+ "fingerprint": "xyz",
+ "timestamp": "2019-12-03T17:09:43.139199-06:00",
+ "source": "File",
+ "location": "Line 50",
+ "cvss": 9.3,
+ "references": null,
+ "cwes": null,
+ "tags": null
+},
+{
+    "name": "Finding 2 Name",
+    "description": "Finding 2 Description",
+    "detail": "Finding 2 detail",
+    "severity": "Low",
+    "confidence": "High",
+    "fingerprint": "abc",
+    "timestamp": "2020-12-03T17:09:43.139199-06:00",
+    "source": "File",
+    "location": "Line 50",
+    "cvss": 9.3,
+    "references": ["https://owasp.org/","https://github.com/owasp/off"],
+    "cwes": ["https://cwe.mitre.org/data/definitions/134.html"],
+    "tags": ["f2", "code"]
+   }
+]

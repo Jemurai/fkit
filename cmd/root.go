@@ -69,9 +69,9 @@ func initConfig() {
 			os.Exit(1)
 		}
 
-		// Search config in home directory with name ".crh" (with extension!!!).
+		// Search config in home directory with name ".fkit" (with extension!!!).
 		viper.AddConfigPath(home)
-		viper.SetConfigName(".crh")
+		viper.SetConfigName(".fkit")
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match

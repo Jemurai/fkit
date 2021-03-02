@@ -18,6 +18,7 @@ import (
 	"encoding/json"
 	"time"
 
+	"github.com/jemurai/fkit/finding"
 	"github.com/jemurai/fkit/utils"
 
 	log "github.com/sirupsen/logrus"
@@ -37,7 +38,15 @@ var readCmd = &cobra.Command{
 		start := time.Now()
 		file := viper.GetString("infile")
 		log.Debugf("Read finding command on %s", file)
-		f := utils.BuildFindingsFromFile(file)
+		typ := viper.GetString("intype")
+		var f []finding.Finding
+		if typ == "" || typ == "fkit" {
+			f = utils.BuildFindingsFromFile(file)
+		} else if typ == "owaspdepcheck" {
+			f = utils.BuildFindingsFromOWASPDepCheckFile(file)
+		} else {
+			log.Errorf("Unsupported type %s", typ)
+		}
 		fjson, _ := json.MarshalIndent(f, "", " ")
 		log.Debugf("Finding %s", fjson)
 		utils.Timing(start, "Elasped time: %f")
@@ -50,6 +59,9 @@ func init() {
 	readCmd.PersistentFlags().String("infile", "", "The file of findings to read.")
 	readCmd.MarkFlagRequired("infile")
 	viper.BindPFlag("infile", readCmd.PersistentFlags().Lookup("infile"))
+
+	readCmd.PersistentFlags().String("intype", "", "The type of file of findings to read.")
+	viper.BindPFlag("intype", readCmd.PersistentFlags().Lookup("intype"))
 
 	log.SetFormatter(&log.TextFormatter{})
 	log.SetLevel(log.DebugLevel)

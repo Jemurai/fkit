@@ -56,11 +56,11 @@ var readCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(readCmd)
 
-	readCmd.PersistentFlags().String("infile", "", "The file of findings to read.")
+	readCmd.PersistentFlags().String("infile", "", "The file of findings to read in json format.")
 	readCmd.MarkFlagRequired("infile")
 	viper.BindPFlag("infile", readCmd.PersistentFlags().Lookup("infile"))
 
-	readCmd.PersistentFlags().String("intype", "", "The type of file of findings to read.")
+	readCmd.PersistentFlags().String("intype", "", "The type of file of findings to read.  Should be fkit | owaspdepcheck")
 	viper.BindPFlag("intype", readCmd.PersistentFlags().Lookup("intype"))
 
 	log.SetFormatter(&log.TextFormatter{})

@@ -42,6 +42,7 @@ fkit read --infile demofindings.json
 Read options:
 
 - `--infile <file>`
+- `--intype fkit|owaspdepcheck` - read in JSON from Dependency Check
 
 ### Compare
 

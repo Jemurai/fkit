@@ -16,6 +16,7 @@ package cmd
 
 import (
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/jemurai/fkit/finding"
@@ -39,6 +40,7 @@ var readCmd = &cobra.Command{
 		file := viper.GetString("infile")
 		log.Debugf("Read finding command on %s", file)
 		typ := viper.GetString("intype")
+		outtyp := viper.GetString("outtype")
 		var f []finding.Finding
 		if typ == "" || typ == "fkit" {
 			f = utils.BuildFindingsFromFile(file)
@@ -47,8 +49,14 @@ var readCmd = &cobra.Command{
 		} else {
 			log.Errorf("Unsupported type %s", typ)
 		}
-		fjson, _ := json.MarshalIndent(f, "", " ")
-		log.Debugf("Finding %s", fjson)
+		if outtyp == "json" || outtyp == "" {
+			fjson, _ := json.MarshalIndent(f, "", " ")
+			fmt.Printf("Finding %s", fjson)
+		} else if outtyp == "csv" {
+			utils.ToCSV(f)
+		} else {
+			log.Errorf("Unsupported output type %s", outtyp)
+		}
 		utils.Timing(start, "Elasped time: %f")
 	},
 }
@@ -62,6 +70,9 @@ func init() {
 
 	readCmd.PersistentFlags().String("intype", "", "The type of file of findings to read.  Should be fkit | owaspdepcheck")
 	viper.BindPFlag("intype", readCmd.PersistentFlags().Lookup("intype"))
+
+	readCmd.PersistentFlags().String("outtype", "", "The desired output format.  Should be csv | json")
+	viper.BindPFlag("outtype", readCmd.PersistentFlags().Lookup("outtype"))
 
 	log.SetFormatter(&log.TextFormatter{})
 	log.SetLevel(log.DebugLevel)

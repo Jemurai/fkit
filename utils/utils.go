@@ -2,9 +2,12 @@ package utils
 
 import (
 	"context"
+	"encoding/csv"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/google/go-github/github"
@@ -134,18 +137,19 @@ func BuildFindingsFromOWASPDepCheckFile(file string) []finding.Finding {
 	var bracket byte = ']'
 	var curly byte = '}'
 	idx := len(bytes)
+	bidx := 0
 	log.Debugf("Length %s", idx)
 	for {
 		idx = idx - 1
-		if idx > 0 && bytes[idx] != bracket { // Walk back to the ]
-			//log.Debugf("Length %s", idx)
-			bytes = bytes[:idx]
-			idx = idx - 1
-		} else {
-			bytes = append(bytes, curly) // Add back the }
+		if idx > 0 && bytes[idx] == bracket { // Walk back to the ]
+			bidx = idx
 			break
 		}
 	}
+	log.Debugf("Returning bytes 0-%s with the last chunk being %s", bidx, string(bytes[bidx-50:bidx]))
+	bytes = bytes[:bidx]
+	bytes = append(bytes, bracket)
+	bytes = append(bytes, curly) // Add back the }
 
 	err = json.Unmarshal(bytes, &dcreport)
 	if err != nil {
@@ -213,4 +217,28 @@ func BuildFindingsFromOWASPDepCheckFile(file string) []finding.Finding {
 	log.Debugf("OWASP Dependency Check found %v vulns", num)
 
 	return findings
+}
+
+func ToCSV(findings []finding.Finding) {
+	writer := csv.NewWriter(os.Stdout)
+	err := writer.Write([]string{"Name", "Description", "Detail", "Severity", "Confidence", "Timestamp", "Source", "Location", "CVSS", "References"})
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+	for _, f := range findings {
+		reference := ""
+		for r := 0; r < len(f.References); r++ {
+			reference = reference + f.References[r]
+			if r < len(f.References)-1 {
+				reference = reference + ", "
+			}
+		}
+		err = writer.Write([]string{f.Name, f.Description, f.Detail, f.Severity, f.Confidence, f.Timestamp.String(), f.Source, f.Location, strconv.FormatFloat(f.Cvss, 'f', -1, 64), reference})
+		if err != nil {
+			fmt.Println("Error:", err)
+			return
+		}
+	}
+	writer.Flush()
 }
